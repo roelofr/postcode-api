@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset>
+
+    <!-- Directories -->
+    <file>src/</file>
+    <file>lib/</file>
+    <file>tests/</file>
+
+    <!-- Ignore some dependency paths -->
+    <exclude-pattern type="relative">^/vendor/</exclude-pattern>
+    <exclude-pattern type="relative">^/node_modules/</exclude-pattern>
+
+    <!-- We just use PSR-2, but need to modify two rules to work with Laravel -->
+    <rule ref="PSR12" />
+    
+    <!-- Never use "else if". -->
+    <rule ref="PSR2.ControlStructures.ElseIfDeclaration.NotAllowed">
+      <type>error</type>
+    </rule>
+
+</ruleset>

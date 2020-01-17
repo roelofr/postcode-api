@@ -18,6 +18,22 @@
         }
     ],
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "illuminate/support": "^5.1 | ^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Roelofr\\PostcodeApi\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Roelofr\\PostcodeApi\\ServiceProvider"
+            ],
+            "aliases": {
+                "PostcodeApi": "Roelofr\\PostcodeApi\\Facade\\PostcodeApi"
+            }
+        }
     }
 }
