@@ -1,0 +1,23 @@
+{
+    "name": "roelofr/postcodeapi",
+    "description": "A simple service for Laravel that provides postal code validation via postcodeapi.nu",
+    "license": "MIT",
+    "homepage": "https://github.com/roelofr/solar-api",
+    "keywords": [
+        "postcode",
+        "the-netherlands",
+        "api",
+        "laravel",
+        "validation"
+    ],
+    "authors": [
+        {
+            "name": "Roelof Roos",
+            "email": "github@roelof.io",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4"
+    }
+}
