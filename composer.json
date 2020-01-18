@@ -24,9 +24,24 @@
         "illuminate/support": "^5.1 | ^6.0",
         "illuminate/validation": "^5.1 | ^6.0"
     },
+    "require-dev": {
+        "orchestra/testbench": "^3.1 | ^4.0",
+        "squizlabs/php_codesniffer": "^3.2",
+        "phpunit/phpunit": "^7.0",
+        "nesbot/carbon": "^2.28"
+    },
+    "scripts": {
+        "lint": "phpcs",
+        "test": "phpunit"
+    },
     "autoload": {
         "psr-4": {
             "Roelofr\\PostcodeApi\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "extra": {
