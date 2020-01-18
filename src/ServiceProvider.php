@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Roelofr\PostcodeApi;
 
-use Roelofr\PostcodeApi\Contracts\PostcodeApiContract;
 use Roelofr\PostcodeApi\Services\PostcodeApiService;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use Roelofr\PostcodeApi\Contracts\ServiceContract;
 
 /**
  * Provides a singleton Postcode API and registers config
@@ -22,7 +22,7 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(PostcodeApiContract::class, PostcodeApiService::class);
+        $this->app->singleton(ServiceContract::class, PostcodeApiService::class);
     }
 
     /**

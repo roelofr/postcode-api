@@ -11,7 +11,7 @@ use Roelofr\PostcodeApi\Models\AddressInformation;
  *
  * @license MIT
  */
-interface PostcodeApiContract
+interface ServiceContract
 {
     /**
      * Retireves information about the given postcode and number.

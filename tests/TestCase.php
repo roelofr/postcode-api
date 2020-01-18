@@ -5,11 +5,10 @@ namespace Tests;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Foundation\Application;
 use JsonException;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use Roelofr\PostcodeApi\Contracts\PostcodeApiContract;
+use Roelofr\PostcodeApi\Contracts\ServiceContract;
 use Roelofr\PostcodeApi\ServiceProvider;
 use Roelofr\PostcodeApi\Services\PostcodeApiService;
 use RuntimeException;
@@ -18,9 +17,10 @@ abstract class TestCase extends BaseTestCase
 {
     /**
      * Returns the Postcode API service
+     *
      * @return Roelofr\PostcodeApi\Contracts\PostcodeApiContract
      */
-    protected function getService(MockHandler $handler = null): PostcodeApiContract
+    protected function getService(MockHandler $handler = null): ServiceContract
     {
         // Return default if no handler is set
         if ($handler) {
@@ -39,6 +39,7 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Get package providers.
+     *
      * @param Application $app
      * @return string[]
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -52,6 +53,7 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Define environment setup.
+     *
      * @param Application $app
      * @return void
      */

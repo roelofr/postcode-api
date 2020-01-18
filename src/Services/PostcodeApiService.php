@@ -4,28 +4,28 @@ declare(strict_types=1);
 
 namespace Roelofr\PostcodeApi\Services;
 
-use Roelofr\PostcodeApi\Contracts\PostcodeApiContract;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Cache\Repository as CacheRepository;
+use Illuminate\Cache\TaggedCache;
+use Illuminate\Contracts\Cache\Store as CacheStoreContract;
+use Illuminate\Contracts\Config\Repository as ConfigContract;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
+use JsonException;
+use Roelofr\PostcodeApi\Contracts\ServiceContract;
 use Roelofr\PostcodeApi\Exceptions\ApiException;
 use Roelofr\PostcodeApi\Exceptions\AuthenticationFailureException;
 use Roelofr\PostcodeApi\Exceptions\MalformedDataException;
 use Roelofr\PostcodeApi\Exceptions\NotFoundException;
 use Roelofr\PostcodeApi\Models\AddressInformation;
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Psr7\Request;
-use Illuminate\Contracts\Cache\Store as CacheStoreContract;
-use Illuminate\Cache\Repository as CacheRepository;
-use Illuminate\Cache\TaggedCache;
-use Illuminate\Contracts\Config\Repository as ConfigContract;
-use Illuminate\Support\Str;
-use InvalidArgumentException;
-use JsonException;
 
 /**
  * Provides a quick and easy method to retrieve addresses
  *
  * @license MIT
  */
-class PostcodeApiService implements PostcodeApiContract
+class PostcodeApiService implements ServiceContract
 {
     private const URL_TESTING = 'https://sandbox.postcodeapi.nu/';
     private const URL_PRODUCTION = 'https://api.postcodeapi.nu/';
