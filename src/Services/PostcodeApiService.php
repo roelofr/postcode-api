@@ -13,9 +13,11 @@ use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use JsonException;
+use Roelofr\PostcodeApi\Contracts\CachedServiceContract;
 use Roelofr\PostcodeApi\Contracts\ServiceContract;
 use Roelofr\PostcodeApi\Exceptions\ApiException;
 use Roelofr\PostcodeApi\Exceptions\AuthenticationFailureException;
+use Roelofr\PostcodeApi\Exceptions\CacheClearException;
 use Roelofr\PostcodeApi\Exceptions\MalformedDataException;
 use Roelofr\PostcodeApi\Exceptions\NotFoundException;
 use Roelofr\PostcodeApi\Models\AddressInformation;
@@ -25,7 +27,7 @@ use Roelofr\PostcodeApi\Models\AddressInformation;
  *
  * @license MIT
  */
-class PostcodeApiService implements ServiceContract
+class PostcodeApiService implements CachedServiceContract, ServiceContract
 {
     private const URL_TESTING = 'https://sandbox.postcodeapi.nu/';
     private const URL_PRODUCTION = 'https://api.postcodeapi.nu/';
@@ -210,5 +212,27 @@ class PostcodeApiService implements ServiceContract
 
         // Throw exception
         throw new $type($message, $request, $response);
+    }
+
+    /**
+     * Clears cached postcodes, causing all locally stored results to be re-retrieved.
+     *
+     * @throws Roelofr\PostcodeApi\Exceptions\CacheClearException If the cache can't be cleared
+     */
+    public function clearCache(): void
+    {
+        // Fail if disabled
+        if (!$this->cache) {
+            throw new CacheClearException('Cache is not enabled', CacheClearException::ERR_DISABLED);
+        }
+
+        // Fail if not tagged
+        if (!$this->cache instanceof TaggedCache) {
+            // phpcs:ignore Generic.Files.LineLength.TooLong
+            throw new CacheClearException('Cache is not tagged, not purging everything', CacheClearException::ERR_BUCKSHOT);
+        }
+
+        // Flush items
+        $this->cache->flush();
     }
 }

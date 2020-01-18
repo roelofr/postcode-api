@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `postcode:clear-cache` command, to remove cached postcodes on a tagged cache
+- `Roelofr\PostcodeApi\Contracts\CacheServiceContract` for allowing you to skip
+  writing cache-clearing logic if you don't need to.
+- `Roelofr\PostcodeApi\Exceptions\CacheClearException` in case cache clearing
+  goes south.
+
 ## [0.2.0] - 2020-01-18
 
 ### Changed
