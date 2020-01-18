@@ -1,0 +1,82 @@
+name: "Run unit tests"
+
+on:
+  - push
+  - pull_request
+
+env:
+  CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_ID }}
+  POSTCODE_API_KEY: ${{ secrets.POSTCODE_API_KEY }}
+  POSTCODE_API_SANDBOX: (true)
+  POSTCODE_API_USE_CACHE: (true)
+
+
+jobs:
+  test:
+    name: "Build"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['7.4', '8.0']
+        package-release: ['lowest', 'source', 'dist']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: ${{ matrix.php }}
+          extension: exif,json,mbstring,dom
+
+      - name: Start test on CodeClimate (newer code)
+        continue-on-error: true
+        if: "matrix.package-release != 'lowest'"
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+
+      - name: Get user-level Composer cache
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+
+      - name: Setup Composer cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ matrix.package-release }}-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php }}-${{ matrix.package-release }}-
+            composer-${{ runner.os }}-${{ matrix.php }}-
+            composer-${{ runner.os }}-
+
+      - name: Pretend we're running PHP 7.4 (PHP 8.0+)
+        if: "matrix.php == '8.0'"
+        run: composer config platform.php 7.4.1
+
+      - name: Install composer dependencies
+        run: composer update --no-suggest --no-progress --no-interaction --prefer-${{ matrix.package-release }}
+
+      - name: Run linters (newer code)
+        if: "matrix.package-release != 'lowest'"
+        run: composer run lint
+
+      - name: Run unit tests without coverage (oldest code)
+        if: "matrix.package-release == 'lowest'"
+        run: |
+            test -d dist || mkdir dist
+            vendor/bin/phpunit --no-coverage
+
+      - name: Run unit tests with coverage (newer code)
+        if: "matrix.package-release != 'lowest'"
+        run: |
+            test -d dist || mkdir dist
+            vendor/bin/phpunit --coverage-text --coverage-clover=dist/coverage-clover.xml
+
+      - name: Report test results to CodeClimate (newer code)
+        continue-on-error: true
+        if: "matrix.package-release != 'lowest'"
+        run: |
+          ./cc-test-reporter format-coverage -t clover ./dist/coverage-clover.xml
+          ./cc-test-reporter upload-coverage
