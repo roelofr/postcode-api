@@ -36,7 +36,7 @@ class PostcodeApiService implements PostcodeApiContract
     private const REGEX_NUMBER = '/^\s*([1-9][0-9]{0,4})/';
 
     /**
-     * HTTP client with authentication
+     * HTTP client provided by Laravel
      */
     private GuzzleClient $client;
 
@@ -46,16 +46,24 @@ class PostcodeApiService implements PostcodeApiContract
     private ?CacheStoreContract $cache;
 
     /**
+     * Guzzle options (headers and such)
+     */
+    private array $httpOptions;
+
+    /**
      * Creates a new Postcode API client based on the provided config
      * @param ConfigContract $config Config to read from
      * @param CacheRepository $cache Cache to use
      */
-    public function __construct(ConfigContract $config, CacheRepository $cache)
+    public function __construct(GuzzleClient $http, ConfigContract $config, CacheRepository $cache)
     {
         // Get config
         $apiKey = $config->get('postcode-api.api-key');
         $useSandbox = (bool) $config->get('postcode-api.use-sandbox', true);
         $useCache = (bool) $config->get('postcode-api.use-cache', true);
+
+        // Assign client
+        $this->client = $http;
 
         // Determine URL, use testing API if no key is set (don't spam
         // production with test requests)
@@ -68,8 +76,8 @@ class PostcodeApiService implements PostcodeApiContract
             \phpversion()
         );
 
-        // Create client
-        $this->client = new GuzzleClient([
+        // Create options
+        $this->httpOptions = [
             'http_errors' => false,
             'base_uri' => $baseUrl,
             'timeout' => 5,
@@ -77,7 +85,7 @@ class PostcodeApiService implements PostcodeApiContract
                 'X-API-Key' => $apiKey ?? 'test',
                 'User-Agent' => $userAgent
             ]
-        ]);
+        ];
 
         // If enabled, enable the cache
         if ($useCache) {
@@ -148,12 +156,14 @@ class PostcodeApiService implements PostcodeApiContract
         // Perform API call
         $request = new Request(
             'GET',
-            sprintf(self::LOOKUP_PATH, $postcode, $number),
-            $this->client->getConfig('headers')
+            sprintf(self::LOOKUP_PATH, $postcode, $number)
         );
-        $response = $this->client->send($request);
+        $response = $this->client->send($request, $this->httpOptions);
 
-        if ($response->getStatusCode() === 200) {
+        // Get status code
+        $responseStatus = $response->getStatusCode();
+
+        if ($responseStatus === 200) {
             try {
                 // Decode JSON and convert to AddressInformation
                 $json = json_decode($response->getBody()->getContents(), true, 2, \JSON_THROW_ON_ERROR);
@@ -168,9 +178,10 @@ class PostcodeApiService implements PostcodeApiContract
             if ($this->cache) {
                 $this->cache->forever($cacheKey, $data);
             }
-        }
 
-        $responseStatus = $response->getStatusCode();
+            // Return data
+            return $data;
+        }
 
         // Default message and type
         $message = "Request failed: {$response->getReasonPhrase()}";
