@@ -135,13 +135,13 @@ class PostcodeRetrievalTest extends TestCase
     /**
      * Returns an invalid entry from the API, with exception
      * @param string $postcode
-     * @param string $number
+     * @param int $number
      * @param AddressInformation $address
      * @return array
      */
     protected function createInvalidEntry(
         string $postcode,
-        string $number,
+        int $number,
         Response $response,
         RequestException $exception
     ): array {
@@ -169,7 +169,7 @@ class PostcodeRetrievalTest extends TestCase
         return [
             $this->createValidEntry('6545CA', '29', new AddressInformation(
                 '6545CA',
-                '29',
+                29,
                 'Waldeck Pyrmontsingel',
                 'Nijmegen',
                 'Nijmegen',
@@ -177,7 +177,7 @@ class PostcodeRetrievalTest extends TestCase
             )),
             $this->createValidEntry('1021JT', '19', new AddressInformation(
                 '1021JT',
-                '19',
+                19,
                 'Hamerstraat',
                 'Amsterdam',
                 'Amsterdam',
@@ -185,7 +185,7 @@ class PostcodeRetrievalTest extends TestCase
             )),
             $this->createValidEntry('5038EA', '17', new AddressInformation(
                 '5038EA',
-                '17',
+                17,
                 'Stationsstraat',
                 'Tilburg',
                 'Tilburg',
@@ -206,7 +206,7 @@ class PostcodeRetrievalTest extends TestCase
         return [
             $this->createInvalidEntry(
                 '6545CA',
-                '299',
+                299,
                 $this->buildJsonResponse(404, ['title' => 'Resource not found']),
                 new NotFoundException('The postcode/number combination was not found', $request)
             ),

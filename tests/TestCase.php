@@ -26,7 +26,7 @@ abstract class TestCase extends BaseTestCase
         if ($handler) {
             // Configure handler
             $httpClient = new GuzzleClient([
-                'hander' => HandlerStack::create($handler)
+                'handler' => HandlerStack::create($handler)
             ]);
 
             // Bind it
@@ -59,14 +59,8 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        // Setup default database to use sqlite :memory:
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
-        ]);
-        $app['config']->set('postcode-api', include dirname(__DIR__) . '/lib/config.php');
+        // Setup default config
+        $app->get('config')->set('postcode-api', include dirname(__DIR__) . '/lib/config.php');
     }
 
     /**
