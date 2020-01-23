@@ -58,6 +58,7 @@ class PostcodeRetrievalTest extends TestCase
      * @param Exception $exception
      * @return void
      * @dataProvider getInvalidAddresses
+     * @covers \Roelofr\PostcodeApi\Exceptions\NotFoundException
      */
     public function testInvalidData(
         string $postcode,
@@ -94,6 +95,7 @@ class PostcodeRetrievalTest extends TestCase
     /**
      * Sets the API key to something invalid and tests that
      * @return void
+     * @covers \Roelofr\PostcodeApi\Exceptions\AuthenticationFailureException
      */
     public function testInvalidApiKey()
     {
