@@ -74,7 +74,8 @@ class AddressInformationTest extends TestCase
         $instance = new AddressInformation(...$data);
 
         $this->assertSame(
-            "Dorpsstraat 77,\n1234AB Amsterdam (Noord-Holland)", (string) $instance
+            "Dorpsstraat 77,\n1234AB Amsterdam (Noord-Holland)",
+            (string) $instance
         );
     }
 
