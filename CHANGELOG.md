@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Roelofr\PostcodeApi\Exceptions\CacheClearException` in case cache clearing
   goes south.
 
+## Fixed
+ - Tests no longer make API calls, but use mocked responses instead
+
 ## [0.2.0] - 2020-01-18
 
 ### Changed

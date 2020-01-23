@@ -25,12 +25,12 @@ class AddressInformation implements JsonSerializable
     {
         // Get data from JSON
         $fields = [
-            Arr::get($data, 'postcode'),
-            Arr::get($data, 'number'),
-            Arr::get($data, 'street'),
-            Arr::get($data, 'city'),
-            Arr::get($data, 'municipality'),
-            Arr::get($data, 'province'),
+            (string) Arr::get($data, 'postcode'),
+            (int) Arr::get($data, 'number'),
+            (string) Arr::get($data, 'street'),
+            (string) Arr::get($data, 'city'),
+            (string) Arr::get($data, 'municipality'),
+            (string) Arr::get($data, 'province'),
         ];
 
         // Validate all items are occupied

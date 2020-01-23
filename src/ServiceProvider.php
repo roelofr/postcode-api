@@ -6,6 +6,7 @@ namespace Roelofr\PostcodeApi;
 
 use Roelofr\PostcodeApi\Services\PostcodeApiService;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use Roelofr\PostcodeApi\Commands\ClearPostcodeCacheCommand;
 use Roelofr\PostcodeApi\Contracts\ServiceContract;
 
 /**
@@ -32,8 +33,16 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function boot()
     {
+        // Add config
         $this->publishes([
             dirname(__DIR__) . '/lib/config.php' => config_path('postcode-api.php'),
         ], 'config');
+
+        // Add commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                ClearPostcodeCacheCommand::class,
+            ]);
+        }
     }
 }
