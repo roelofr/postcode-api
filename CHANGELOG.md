@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Improved coverage of `AddressInformation` model by adding more tests
+
 ## [0.2.1] - 2020-01-23
 
 ### Added
@@ -15,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Roelofr\PostcodeApi\Exceptions\CacheClearException` in case cache clearing
   goes south.
 
-## Fixed
+### Fixed
  - Tests no longer make API calls, but use mocked responses instead
 
 ## [0.2.0] - 2020-01-18
